@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cancer Detection</title>
+</head>
+<body>
+    <h1>Cancer Detection Prediction</h1>
+    <form id="predictionForm">
+        <label for="size_of_tumor">Size of Tumor:</label>
+        <input type="number" step="any" id="size_of_tumor" required><br><br>
+
+        <label for="number_of_mitotic_cells">Number of Mitotic Cells:</label>
+        <input type="number" id="number_of_mitotic_cells" required><br><br>
+
+        <label for="density_of_tumor">Density of Tumor:</label>
+        <input type="number" step="any" id="density_of_tumor" required><br><br>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <h2>Prediction: <span id="result"></span></h2>
+
+    <script>
+        document.getElementById('predictionForm').onsubmit = async (e) => {
+            e.preventDefault();
+
+            const sizeOfTumor = document.getElementById('size_of_tumor').value;
+            const numberOfMitoticCells = document.getElementById('number_of_mitotic_cells').value;
+            const densityOfTumor = document.getElementById('density_of_tumor').value;
+
+            const response = await fetch('http://127.0.0.1:5000/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    size_of_tumor: sizeOfTumor,
+                    number_of_mitotic_cells: numberOfMitoticCells,
+                    density_of_tumor: densityOfTumor
+                })
+            });
+
+            const data = await response.json();
+            document.getElementById('result').innerText = data.prediction !== undefined ? data.prediction : 'Error';
+        }
+    </script>
+</body>
+</html>
